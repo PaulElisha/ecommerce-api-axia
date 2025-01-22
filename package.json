@@ -1,4 +1,29 @@
 {
+  "name": "assetscooper-multicall-swap-sdk", 
+  "version": "1.0.0", 
+  "description": "A Multicall Swap SDK powered by Uniswap V3 for performing batch token swaps with liquidity checks, slippage tolerance, and approval handling.", 
+  "main": "dist/index.js", 
+  "types": "dist/index.d.ts", 
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "keywords": [
+    "uniswap",
+    "swap",
+    "sdk",
+    "ethereum",
+    "multicall",
+    "token",
+    "liquidity",
+    "assetscooper",
+    "sweep"
+  ],
+  "author": "@PaulElisha", 
+  "contributors": [
+    "@dicethedev"
+  ], 
+  "license": "MIT",
   "dependencies": {
     "@types/jest": "^29.5.14",
     "@uniswap/v3-core": "^1.0.1",
