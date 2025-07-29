@@ -1,58 +1,20 @@
 {
-  "name": "assetscooper-multicall-swap-sdk",
-  "version": "1.0.1",
-  "description": "A Multicall Swap SDK powered by Uniswap V3 for performing batch token swaps with liquidity checks, slippage tolerance, and approval handling.",
-  "main": "dist/index.js",
-  "module": "dist/index.m.js",
-  "unpkg": "dist/index.umd.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    "require": "./dist/index.js",
-    "default": "./dist/index.modern.js"
-  },
-  "scripts": {
-    "build": "rm -rf dist && microbundle --tsconfig tsconfig.json --no-sourcemap",
-    "dev": "microbundle --watch --tsconfig tsconfig.json --no-sourcemap",
-    "test": "jest"
-  },
-  "keywords": [
-    "uniswap",
-    "swap",
-    "sdk",
-    "ethereum",
-    "multicall",
-    "token",
-    "liquidity",
-    "assetscooper",
-    "sweep"
-  ],
-  "author": "@PaulElisha",
-  "contributors": [
-    "@dicethedev"
-  ],
+  "name": "base-multi-swap",
+  "version": "1.0.0",
+  "main": "app.js",
+  "repository": "https://github.com/PaulElisha/base-multi-swap.git",
+  "author": "Paul Elisha <ireajao@yahoo.com>",
   "license": "MIT",
   "devDependencies": {
-    "microbundle": "0.15.0"
+    "dotenv": "^17.2.1",
+    "nodemon": "^3.1.10"
   },
   "dependencies": {
-    "@types/jest": "^29.5.14",
-    "@uniswap/v3-core": "^1.0.1",
-    "@uniswap/v3-periphery": "^1.4.4",
-    "dotenv": "^16.4.7",
-    "ethers": "^6.13.5",
-    "i": "^0.3.7",
-    "jest": "^29.7.0",
-    "npm": "^11.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
-  },
-  "files": [
-    "dist"
-  ],
-  "microbundle": {
-    "external": [
-      "@uniswap/v3-core/artifacts/contracts/UniswapV3Factory.sol/UniswapV3Factory.json",
-      "@uniswap/v3-periphery/artifacts/contracts/SwapRouter.sol/SwapRouter.json"
-    ]
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.18.0",
+    "mongoose": "^8.16.5"
   }
 }

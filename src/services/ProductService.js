@@ -1,0 +1,82 @@
+import { Product } from '../models/productModel.js';
+
+class ProductService {
+
+    createProduct = async (productData) => {
+        const foundProduct = await Product.findOne({ name: productData.name });
+        if (foundProduct) {
+            const error = new Error('Product with this name already exists');
+            error.statusCode = 400;
+            throw error;
+        }
+        const product = Product.create(productData);
+        if (!product) {
+            const error = new Error('Product creation failed');
+            error.statusCode = 500;
+            throw error;
+        }
+    }
+
+    getProducts = async (productData) => {
+        const products = await Product.find(productData);
+        if (products.length === 0) {
+            const error = new Error('No products found');
+            error.statusCode = 404;
+            throw error;
+        }
+        return products;
+    }
+
+    getProductByParam = async (query) => {
+        const product = await Product.find(query);
+        if (product.length === 0) {
+            const error = new Error('No published blogs found');
+            error.statusCode = 404;
+            throw error;
+        }
+        return product;
+    }
+
+    getUserProducts = async (user) => {
+        const products = await Product.find({ userId: user._id });
+        if (!products || products.length === 0) {
+            const error = new Error('No products found for this user');
+            error.statusCode = 404;
+            throw error;
+        }
+        return products;
+    }
+
+    updateProduct = async (filter, productUpdate) => {
+        const product = await Product.findOne(filter);
+        if (!product) {
+            const error = new Error('Product not found');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const updatedProduct = await Product.findOneAndUpdate(filter, productUpdate, { new: true });
+        if (!updatedProduct) {
+            const error = new Error('Product update failed');
+            error.statusCode = 500;
+            throw error;
+        }
+    }
+
+    deleteProduct = async (filter) => {
+        const product = await Product.findOne(filter);
+        if (!product) {
+            const error = new Error('Product not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        const deletedProduct = await Product.findOneAndDelete(filter);
+        if (!deletedProduct) {
+            const error = new Error('Product deletion failed');
+            error.statusCode = 500;
+            throw error;
+        }
+    }
+}
+
+export { ProductService };
