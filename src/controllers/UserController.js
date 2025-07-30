@@ -24,9 +24,9 @@ class UserController {
         }
     }
 
-    createUser = async (req, res) => {
+    signupUser = async (req, res) => {
         try {
-            const response = await this.userService.createUser(req.body);
+            const response = await this.userService.signupUser(req.body);
             res.status(201).json({ message: "User created successfully", status: "ok", data: response });
 
         } catch (error) {
@@ -46,6 +46,12 @@ class UserController {
         } catch (error) {
             return res.status(500).json({ status: "error", error: error.message });
         }
+    }
+
+    logoutUser = async (req, res) => {
+        res.clearCookies('token', this.userService.logoutUser)
+
+        res.status(200).json({ message: "Logout successful" });
     }
 
     updateUser = async (req, res) => {
