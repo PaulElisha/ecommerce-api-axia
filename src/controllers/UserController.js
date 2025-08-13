@@ -49,9 +49,13 @@ class UserController {
     }
 
     logoutUser = async (req, res) => {
-        res.clearCookies('token', this.userService.logoutUser)
+        try {
+            res.clearCookies('token', this.userService.logoutUser)
 
-        res.status(200).json({ message: "Logout successful" });
+            res.status(200).json({ message: "Logout successful" });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
 
     updateUser = async (req, res) => {
@@ -61,6 +65,22 @@ class UserController {
         if (userId === id) {
             try {
                 const response = await this.userService.updateUser(req.params.id, req.body);
+                res.status(200).json({ message: "User updated successfully", status: "ok", data: response });
+            } catch (error) {
+                console.error("Error updating User:", error);
+                res.status(500).json({ message: "Internal Server Error", status: "error" });
+            }
+        }
+        return res.status(401).json({ message: "You are not authorized to edit this user" })
+    }
+
+    updateUserProfile = async (req, res) => {
+        const userId = req.user._id
+        const id = req.params.id;
+
+        if (userId === id) {
+            try {
+                const response = await this.userService.updateUserProfile(req.params.id, req.body);
                 res.status(200).json({ message: "User updated successfully", status: "ok", data: response });
             } catch (error) {
                 console.error("Error updating User:", error);

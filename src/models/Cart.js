@@ -17,16 +17,18 @@ const cartSchema = new Schema({
             required: true,
             default: 1,
         },
+        price: {
+            type: Number,
+            required: true
+        },
         totalItemPrice: {
             type: Number,
-            required: true,
-            default: 0,
+            required: true
         }
     }],
-    totalCartPrice: {
+    totalPrice: {
         type: Number,
-        required: true,
-        default: 0,
+        required: true
     }
 }, { timestamps: true });
 

@@ -5,6 +5,10 @@
   "repository": "https://github.com/PaulElisha/base-multi-swap.git",
   "author": "Paul Elisha <ireajao@yahoo.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "jest"
+  },
   "devDependencies": {
     "dotenv": "^17.2.1",
     "nodemon": "^3.1.10"

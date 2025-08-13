@@ -17,6 +17,7 @@ class UserRouter {
         this.router.get('/', this.userController.getUsers);
         this.router.get('/:id', this.userController.getUser);
         this.router.put('/update/:id', this.userAccess.authorize, this.userController.updateUser);
+        this.router.put('/profile/update/:id', this.userAccess.authorize, this.userController.updateUserProfile);
         this.router.delete('/delete/:id', this.userAccess.authorize, this.userController.deleteUser);
     }
 }

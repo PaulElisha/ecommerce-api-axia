@@ -31,15 +31,15 @@ const userSchema = new Schema({
             type: String,
             required: true,
         },
-        Number: {
+        number: {
             type: Number,
             required: true
         },
-        Street: {
+        street: {
             type: String,
             required: true
         },
-        Bio: {
+        bio: {
             type: String,
             required: true
         }

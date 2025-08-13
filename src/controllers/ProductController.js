@@ -7,8 +7,9 @@ class ProductController {
     }
 
     createProduct = async (req, res) => {
+        const userId = req.user._id
         try {
-            await this.productService.createProduct(req.body);
+            await this.productService.createProduct({ ...req.body, userId });
             res.status(201).json({ message: 'Product created successfully' });
         } catch (error) {
             res.status(error.statusCode || 500).json({ error: error.message });
@@ -17,7 +18,7 @@ class ProductController {
 
     getProducts = async (req, res) => {
         try {
-            const products = await this.productService.getProducts(req.query);
+            const products = await this.productService.getProducts();
             res.status(200).json(products);
         } catch (error) {
             res.status(error.statusCode || 500).json({ error: error.message });
@@ -49,17 +50,17 @@ class ProductController {
     }
 
     updateProduct = async (req, res) => {
-        const productUpdate = req.body;
+        const updateData = req.body;
         const productId = req.params.id;
-        const user = req.user;
-        if (!productUpdate || Object.keys(productUpdate).length === 0) {
+        const userId = req.user._id;
+        if (!updateData || Object.keys(updateData).length === 0) {
             return res.status(400).json({ message: 'No product data provided for update' });
         }
 
-        const filter = { _id: productId, userId: user._id };
+        const filter = { _id: productId, userId };
 
         try {
-            const updatedProduct = await this.productService.updateProduct(filter, productUpdate);
+            const updatedProduct = await this.productService.updateProduct(filter, updateData);
             res.status(200).json({ message: 'Product updated successfully', product: updatedProduct });
         } catch (error) {
             res.status(error.statusCode || 500).json({ error: error.message });
@@ -71,8 +72,8 @@ class ProductController {
         const user = req.user;
 
         try {
-            const deletedProduct = await this.productService.deleteProduct({ _id: productId, userId: user._id });
-            res.status(200).json({ message: 'Product deleted successfully', product: deletedProduct });
+            await this.productService.deleteProduct({ _id: productId, userId: user._id });
+            res.status(200).json({ message: 'Product deleted successfully' });
         } catch (error) {
             res.status(error.statusCode || 500).json({ error: error.message });
         }

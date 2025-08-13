@@ -17,8 +17,8 @@ class ProductService {
         }
     }
 
-    getProducts = async (productData) => {
-        const products = await Product.find(productData);
+    getProducts = async () => {
+        const products = await Product.find().populate('userId');
         if (products.length === 0) {
             const error = new Error('No products found');
             error.statusCode = 404;
@@ -38,7 +38,7 @@ class ProductService {
     }
 
     getUserProducts = async (user) => {
-        const products = await Product.find({ userId: user._id });
+        const products = await Product.findOne({ userId: user._id });
         if (!products || products.length === 0) {
             const error = new Error('No products found for this user');
             error.statusCode = 404;
@@ -55,7 +55,15 @@ class ProductService {
             throw error;
         }
 
-        const updatedProduct = await Product.findOneAndUpdate(filter, productUpdate, { new: true });
+        const updatedProduct = await Product.findOneAndUpdate(filter, {
+            $set: {
+                'name': productUpdate.name,
+                'price': productUpdate.price,
+                'color': productUpdate.color,
+                'size': productUpdate.size
+            }
+        }, { new: true });
+
         if (!updatedProduct) {
             const error = new Error('Product update failed');
             error.statusCode = 500;
@@ -70,7 +78,7 @@ class ProductService {
             error.statusCode = 404;
             throw error;
         }
-        const deletedProduct = await Product.findOneAndDelete(filter);
+        await Product.findOneAndDelete(filter);
         if (!deletedProduct) {
             const error = new Error('Product deletion failed');
             error.statusCode = 500;
