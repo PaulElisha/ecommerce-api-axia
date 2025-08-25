@@ -1,5 +1,5 @@
 import { UserService } from "../services/UserService"
-
+import { forwarder } from '../config/MailForwarder';
 class UserController {
 
     constructor() {
@@ -26,9 +26,11 @@ class UserController {
 
     signupUser = async (req, res) => {
         try {
-            const response = await this.userService.signupUser(req.body);
-            res.status(201).json({ message: "User created successfully", status: "ok", data: response });
+            await this.userService.signupUser(req.body);
 
+            forwarder.sendMail(req, res);
+
+            res.status(201).json({ message: "User created successfully", status: "ok", data: response });
         } catch (error) {
             console.error("Error creating User:", err);
             res.status(500).json({ message: "Internal Server Error", status: "error" });
@@ -38,6 +40,8 @@ class UserController {
     loginUser = async (req, res) => {
         try {
             const token = await this.userService.loginUser(req.body);
+
+            forwarder.sendMail(req, res);
 
             return res
                 .cookie("token", token, { httpOnly: true, sameSite: "strict" })

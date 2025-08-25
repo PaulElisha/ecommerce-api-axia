@@ -5,14 +5,13 @@ const userSchema = new Schema({
     username: {
         type: String,
         required: true,
-        unique: true,
+        unique: true
     },
     email: {
         type: String,
         required: true,
         unique: true,
-        toLowerCase: true,
-
+        toLowerCase: true
     },
     password: {
         type: String,
@@ -23,6 +22,17 @@ const userSchema = new Schema({
         default: false
     },
     AltimatAdmin: {
+        type: Boolean,
+        default: false
+    },
+    otp: {
+        type: String
+    },
+    otpExpired: {
+        type: Date,
+        default: Date.now() + 5 * 60 * 1000, // 5 minutes
+    },
+    isVerified: {
         type: Boolean,
         default: false
     },

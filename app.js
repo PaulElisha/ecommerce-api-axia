@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import { cartRouter } from './src/routes/CartRouter.js';
 import { productRouter } from './src/routes/ProductRouter.js';
 import { userRouter } from './src/routes/UserRouter.js';
+import { otpRouter } from './src/routes/OtpRouter.js';
 
 import { config } from "dotenv";
 config({ path: ".env" });
@@ -30,6 +31,7 @@ class App {
         this.app.use('/api/users', userRouter);
         this.app.use('/api/cart', cartRouter);
         this.app.use('/api/products', productRouter);
+        this.app.use('/api/otp', otpRouter);
     }
 
     startServer() {

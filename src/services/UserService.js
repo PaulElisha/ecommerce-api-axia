@@ -1,3 +1,4 @@
+import { use } from "react";
 import User from "../models/User";
 import generateUserToken from "../utils/generateUserToken"
 
@@ -5,13 +6,17 @@ import generateUserToken from "../utils/generateUserToken"
 class UserService {
 
     signupUser = async (userData) => {
-        const foundUser = await User.findOne({ email: userData.email });
+
+        const otp = Math.floor(100000 + Math.random() * 900000);
+        const otpExpired = Date.now() + 5 * 60 * 1000; // 5 minutes from now
+
+        const foundUser = await User.findOne({ email: userData.email.toLowerCase() });
         if (foundUser) {
             const error = new Error('User with this email already exists');
             error.statusCode = 400;
             throw error;
         }
-        const user = User.create(userData);
+        const user = User.create({ ...userData, otp, otpExpired });
         if (!user) {
             const error = new Error('User creation failed');
             error.statusCode = 500;
@@ -49,7 +54,6 @@ class UserService {
             sameSite: 'strict'
         }
     };
-
 
     getUsers = async () => {
         const users = await User.find({}).select('-password');

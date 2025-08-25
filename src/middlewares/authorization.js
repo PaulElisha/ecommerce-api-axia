@@ -10,7 +10,7 @@ class Authorization {
         const accessToken = req.cookies?.token;
 
         if (!accessToken) {
-            return rss.status(200).json({ mesage: 'Please login first' });
+            return res.status(200).json({ mesage: 'Please login first' });
         }
 
         try {
