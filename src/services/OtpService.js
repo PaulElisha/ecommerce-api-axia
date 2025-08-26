@@ -1,16 +1,9 @@
 import User from '../models/User.js';
-import { generateUserOtp } from '../utils/utils.js';
+import { generateUserOtp } from '../utils/generateUtils.js';
 class OtpService {
 
     verifyUserOTP = async (body) => {
         const { otp, userId } = body;
-
-        const user = await User.findById(userId);
-        if (!user) {
-            const error = new Error("User not found");
-            error.statusCode = 400;
-            throw error;
-        }
 
         if (!otp) {
             const error = new Error("OTP is required");
@@ -18,20 +11,21 @@ class OtpService {
             throw error;
         }
 
+        if (user.otp !== otp) {
+            const error = new Error("Invalid or Expired OTP");
+            error.statusCode = 400;
+            throw error;
+        }
+
+        const user = await User.findOne({ userId, otp, otpExpired: { $gt: Date.now() } });
+        if (!user) {
+            const error = new Error("User not found");
+            error.statusCode = 400;
+            throw error;
+        }
+
         if (user.isVerified) {
             const error = new Error("User already verified");
-            error.statusCode = 400;
-            throw error;
-        }
-
-        if (user.otp !== otp) {
-            const error = new Error("Invalid OTP");
-            error.statusCode = 400;
-            throw error;
-        }
-
-        if (user.otpExpired < Date.now()) {
-            const error = new Error("OTP has expired");
             error.statusCode = 400;
             throw error;
         }
@@ -43,7 +37,7 @@ class OtpService {
     }
 
     resendUserOTP = async (gmail) => {
-        const user = await User.findById({ gmail });
+        const user = await User.findOne({ gmail });
         if (!user) {
             const error = new Error("User not found");
             error.statusCode = 400;

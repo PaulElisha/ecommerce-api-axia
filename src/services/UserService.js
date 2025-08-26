@@ -1,5 +1,5 @@
 import User from "../models/User";
-import { generateUserOtp } from "../utils/generateUserToken.js";
+import { generateUserOtp } from "../utils/generateUtils.js";
 
 class UserService {
 

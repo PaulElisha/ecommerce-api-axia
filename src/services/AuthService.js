@@ -1,4 +1,7 @@
-import generateUserToken from "../utils/utils";
+import bcrypt from "bcryptjs";
+import Crypto from "crypto";
+
+import generateUserToken from "../utils/generateUtils";
 import User from "../models/User";
 
 
@@ -36,7 +39,7 @@ class AuthService {
             throw error;
         }
 
-        const token = crypto.randomBytes(20).toString('hex');
+        const token = Crypto.randomBytes(20).toString('hex');
         user.passwordResetToken = token;
         user.passwordResetExpires = Date.now() + 20 * 60 * 1000;
         await user.save();

@@ -1,11 +1,14 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 
-import { cartRouter } from './src/routers/CartRouter.js';
-import { productRouter } from './src/routers/ProductRouter.js';
-import { userRouter } from './src/routers/UserRouter.js';
-import { authRouter } from './src/routers/AuthRouter.js';
-import { otpRouter } from './src/routers/OtpRouter.js';
+import { cartRouter } from './src/routes/CartRouter.js';
+import { productRouter } from './src/routes/ProductRouter.js';
+import { userRouter } from './src/routes/UserRouter.js';
+import { authRouter } from './src/routes/AuthRouter.js';
+import { otpRouter } from './src/routes/OtpRouter.js';
+
+import { scheduleCleaning } from './src/utils/Scheduler/scheduleCleaning.js';
+import { connectDB } from './src/config/connectDB.js';
 
 import { config } from "dotenv";
 config({ path: ".env" });
@@ -17,6 +20,8 @@ console.log("Port and Hostname:", `${port} - ${hostname} - ${MONGODB_URI}`);
 
 class App {
     constructor() {
+        this.connectDB = new connectDB();
+        scheduleCleaning();
         this.app = express();
         this.initializeMiddlewares();
         this.initializeRoutes();
