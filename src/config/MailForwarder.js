@@ -2,6 +2,10 @@ import nodemailer from 'nodemailer';
 
 class MailForwarder {
 
+    constructor(text) {
+        this.text = text;
+    }
+
     sendMail = async (req, res) => {
         const transporter = nodemailer.createTransport({
             host: process.env.EMAIL_SERVICE,
@@ -12,12 +16,13 @@ class MailForwarder {
                 pass: process.env.EMAIL_PASSWORD
             }
         });
+        const { subject, message } = this.text;
 
         const mail = {
             from: `Sender Name <${process.env.EMAIL_USER}>`,
             to: `Recipient <${req.body.email}>`,
-            subject: "Welcome to Our Service",
-            text: `Hello ${req.body.username}, welcome to our service!`
+            subject: subject,
+            text: message
         };
 
         try {
@@ -30,5 +35,4 @@ class MailForwarder {
     }
 }
 
-const forwarder = new MailForwarder();
-export { forwarder }
+export { MailForwarder }

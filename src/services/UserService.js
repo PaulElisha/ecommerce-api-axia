@@ -1,14 +1,11 @@
-import { use } from "react";
 import User from "../models/User";
-import generateUserToken from "../utils/generateUserToken"
-
+import { generateUserOtp } from "../utils/generateUserToken.js";
 
 class UserService {
 
     signupUser = async (userData) => {
 
-        const otp = Math.floor(100000 + Math.random() * 900000);
-        const otpExpired = Date.now() + 5 * 60 * 1000; // 5 minutes from now
+        const { otp } = generateUserOtp();
 
         const foundUser = await User.findOne({ email: userData.email.toLowerCase() });
         if (foundUser) {
@@ -16,35 +13,12 @@ class UserService {
             error.statusCode = 400;
             throw error;
         }
-        const user = User.create({ ...userData, otp, otpExpired });
+        const user = User.create({ ...userData, otp });
         if (!user) {
             const error = new Error('User creation failed');
             error.statusCode = 500;
             throw error;
         }
-    }
-
-    loginUser = async (loginDetails) => {
-
-        const user = await User.findOne({ email: loginDetails.email.toLowerCase() })
-
-        if (!user) {
-            const error = new Error("User not found. Register User");
-            error.statusCode = 404;
-            throw error;
-        }
-
-        user.comparePassword(loginDetails.password, (err, isMatch) => {
-            if (err || !isMatch) {
-                const error = new Error('Invalid email or password');
-                error.statusCode = 401;
-                throw error
-            }
-        });
-
-        const token = generateUserToken(user);
-
-        return token;
     }
 
     logoutUser = () => {
@@ -82,7 +56,6 @@ class UserService {
             error.statusCode = 404;
             throw error;
         }
-        return user;
     }
 
     updateUserProfile = async (id, data) => {
@@ -99,7 +72,6 @@ class UserService {
             error.statusCode = 404;
             throw error;
         }
-        return user;
     }
 
     deleteUser = async (id) => {

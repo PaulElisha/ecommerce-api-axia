@@ -1,10 +1,11 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 
-import { cartRouter } from './src/routes/CartRouter.js';
-import { productRouter } from './src/routes/ProductRouter.js';
-import { userRouter } from './src/routes/UserRouter.js';
-import { otpRouter } from './src/routes/OtpRouter.js';
+import { cartRouter } from './src/routers/CartRouter.js';
+import { productRouter } from './src/routers/ProductRouter.js';
+import { userRouter } from './src/routers/UserRouter.js';
+import { authRouter } from './src/routers/AuthRouter.js';
+import { otpRouter } from './src/routers/OtpRouter.js';
 
 import { config } from "dotenv";
 config({ path: ".env" });
@@ -29,6 +30,7 @@ class App {
 
     initializeRoutes() {
         this.app.use('/api/users', userRouter);
+        this.app.use('/api/auth', authRouter);
         this.app.use('/api/cart', cartRouter);
         this.app.use('/api/products', productRouter);
         this.app.use('/api/otp', otpRouter);

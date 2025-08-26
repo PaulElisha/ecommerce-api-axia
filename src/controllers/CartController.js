@@ -15,8 +15,8 @@ class CartController {
         };
 
         try {
-            const data = await this.cartService.createCart(param);
-            res.status(200).json({ data });
+            const cart = await this.cartService.createCart(param);
+            res.status(200).json({ cart });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -61,8 +61,8 @@ class CartController {
         }
 
         try {
-            const cart = await this.cartService.deleteCart(filter);
-            res.status(200).json({ cart })
+            await this.cartService.deleteCart(filter);
+            res.status(200).json({ "Successfully deleted cart" })
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

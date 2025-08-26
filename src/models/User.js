@@ -32,9 +32,18 @@ const userSchema = new Schema({
         type: Date,
         default: Date.now() + 5 * 60 * 1000, // 5 minutes
     },
+    lastOtpRequest: {
+        type: Date,
+    },
     isVerified: {
         type: Boolean,
         default: false
+    },
+    passwordResetToken: {
+        type: String,
+    },
+    passwordResetExpires: {
+        type: Date,
     },
     profile: {
         country: {

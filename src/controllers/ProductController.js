@@ -60,8 +60,8 @@ class ProductController {
         const filter = { _id: productId, userId };
 
         try {
-            const updatedProduct = await this.productService.updateProduct(filter, updateData);
-            res.status(200).json({ message: 'Product updated successfully', product: updatedProduct });
+            await this.productService.updateProduct(filter, updateData);
+            res.status(200).json({ message: 'Product updated successfully' });
         } catch (error) {
             res.status(error.statusCode || 500).json({ error: error.message });
         }

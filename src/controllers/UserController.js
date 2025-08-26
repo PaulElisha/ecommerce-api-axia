@@ -1,5 +1,5 @@
 import { UserService } from "../services/UserService"
-import { forwarder } from '../config/MailForwarder';
+import { MailForwarder } from '../config/MailForwarder';
 class UserController {
 
     constructor() {
@@ -25,30 +25,22 @@ class UserController {
     }
 
     signupUser = async (req, res) => {
+        const text = {
+            subject: "<h1>Welcome to Our Service</h1>",
+            message: `<p>Hello ${req.body.username}, welcome to our service!</p>`
+        }
+
+        const forwarder = new MailForwarder(text);
+
         try {
             await this.userService.signupUser(req.body);
 
             forwarder.sendMail(req, res);
 
-            res.status(201).json({ message: "User created successfully", status: "ok", data: response });
+            res.status(201).json({ message: "User created successfully", status: "ok" });
         } catch (error) {
             console.error("Error creating User:", err);
             res.status(500).json({ message: "Internal Server Error", status: "error" });
-        }
-    }
-
-    loginUser = async (req, res) => {
-        try {
-            const token = await this.userService.loginUser(req.body);
-
-            forwarder.sendMail(req, res);
-
-            return res
-                .cookie("token", token, { httpOnly: true, sameSite: "strict" })
-                .status(200)
-                .json({ status: "ok", message: "Login successful", token });
-        } catch (error) {
-            return res.status(500).json({ status: "error", error: error.message });
         }
     }
 
@@ -68,8 +60,8 @@ class UserController {
 
         if (userId === id) {
             try {
-                const response = await this.userService.updateUser(req.params.id, req.body);
-                res.status(200).json({ message: "User updated successfully", status: "ok", data: response });
+                await this.userService.updateUser(req.params.id, req.body);
+                res.status(200).json({ message: "User updated successfully", status: "ok" });
             } catch (error) {
                 console.error("Error updating User:", error);
                 res.status(500).json({ message: "Internal Server Error", status: "error" });
@@ -84,8 +76,8 @@ class UserController {
 
         if (userId === id) {
             try {
-                const response = await this.userService.updateUserProfile(req.params.id, req.body);
-                res.status(200).json({ message: "User updated successfully", status: "ok", data: response });
+                await this.userService.updateUserProfile(req.params.id, req.body);
+                res.status(200).json({ message: "User updated successfully", status: "ok" });
             } catch (error) {
                 console.error("Error updating User:", error);
                 res.status(500).json({ message: "Internal Server Error", status: "error" });

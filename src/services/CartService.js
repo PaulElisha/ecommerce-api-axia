@@ -42,7 +42,7 @@ class CartService {
             throw error;
         }
 
-        return { cart, message: 'Cart created and product added successfully' };
+        return cart;
     }
 
     getUserCart = async (param) => {
