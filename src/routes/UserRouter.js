@@ -12,7 +12,6 @@ class UserRouter {
     }
 
     initializeRoutes() {
-        this.router.post('/signup', this.userController.signupUser);
         this.router.get('/', this.userController.getUsers);
         this.router.get('/:id', this.userAccess.authorize, this.userController.getUser);
         this.router.put('/update/:id', this.userAccess.authorize, this.userController.updateUser);

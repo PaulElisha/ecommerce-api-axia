@@ -8,6 +8,36 @@ class AuthController {
         this.authService = new AuthService();
     }
 
+    registerUser = async (req, res) => {
+        const text = {
+            subject: "<h1>Welcome to Our Service</h1>",
+            message: `<p>Hello ${req.body.username}, welcome to our service!</p>`
+        }
+
+        const forwarder = new MailForwarder(text);
+
+        try {
+            await this.authService.registerUser(req.body);
+
+            forwarder.sendMail(req, res);
+
+            res.status(201).json({ message: "User created successfully", status: "ok" });
+        } catch (error) {
+            console.error("Error creating User:", error);
+            res.status(500).json({ message: "Internal Server Error", status: "error" });
+        }
+    }
+
+    logoutUser = async (req, res) => {
+        try {
+            res.clearCookie('token', this.authService.logoutUser)
+
+            res.status(200).json({ message: "Logout successful", status: "ok" });
+        } catch (error) {
+            res.status(500).json({ message: error.message, status: "error" });
+        }
+    }
+
     loginUser = async (req, res) => {
         const text = {
             subject: "Login Alert",
@@ -38,7 +68,7 @@ class AuthController {
                 subject: `<h1>Password Reset Request</h1>`,
                 message: `<p>
                         Click on the link to reset your password
-                        <a href="https://localhost:3000/password/reset/${token}">Reset Password</a>
+                        <a href="https://localhost:3000/password/reset/request/${token}">Reset Password</a>
                     </p>`
             }
             const forwarder = new MailForwarder(text);
@@ -52,7 +82,7 @@ class AuthController {
 
     resetPasswordRequest = async (req, res) => {
         try {
-            await this.authService.resetPasswordRequest(req.body);
+            await this.authService.resetPasswordRequest(req.body, req.params.token);
             return res.status(200).json({ message: "Password has been reset", status: "ok" });
         } catch (error) {
             return res.status(500).json({ message: error.message, status: "error" });

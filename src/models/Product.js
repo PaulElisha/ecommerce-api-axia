@@ -9,12 +9,20 @@ const productSchema = new Schema({
         type: String,
         required: true,
     },
+    brand: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
     price: {
         type: Number,
         required: true
     },
     color: {
-        type: String,
+        type: Array,
         required: true
     },
     size: {
@@ -24,8 +32,12 @@ const productSchema = new Schema({
     imgUrl: {
         type: String,
         required: true
-    }
-}, {
+    },
+    category: {
+        type: String,
+        enum: ['fashion', 'electronics', 'home', 'beauty', 'sports', 'toys'],
+        required: true
+    },
     timestamps: true
 });
 

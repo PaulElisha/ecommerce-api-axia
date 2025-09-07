@@ -1,4 +1,4 @@
-import { ProductService } from '../services/productService.js';
+import { ProductService } from '../services/ProductService.js';
 
 class ProductController {
 
@@ -6,10 +6,10 @@ class ProductController {
         this.productService = new ProductService();
     }
 
-    createProduct = async (req, res) => {
+    registerProduct = async (req, res) => {
         const userId = req.user._id
         try {
-            await this.productService.createProduct({ ...req.body, userId });
+            await this.productService.registerProduct({ ...req.body, userId });
             res.status(201).json({ message: 'Product created successfully' });
         } catch (error) {
             res.status(error.statusCode || 500).json({ error: error.message });
@@ -25,7 +25,17 @@ class ProductController {
         }
     }
 
-    getProductByParam = async (req, res) => {
+    getProductsByCategory = async (req, res) => {
+        const { category } = req.params;
+        try {
+            const products = await this.productService.getProductsByCategory(category);
+            res.status(200).json(products);
+        } catch (error) {
+            res.status(error.statusCode || 500).json({ error: error.message });
+        }
+    }
+
+    getProductByQuery = async (req, res) => {
         const query = {};
         const { name, price, year } = req.query;
         if (name) query.name = name;
@@ -60,8 +70,8 @@ class ProductController {
         const filter = { _id: productId, userId };
 
         try {
-            await this.productService.updateProduct(filter, updateData);
-            res.status(200).json({ message: 'Product updated successfully' });
+            const data = await this.productService.updateProduct(filter, updateData);
+            res.status(200).json({ message: 'Product updated successfully', status: 'ok', data });
         } catch (error) {
             res.status(error.statusCode || 500).json({ error: error.message });
         }

@@ -1,11 +1,30 @@
 import bcrypt from "bcryptjs";
 import Crypto from "crypto";
 
-import generateUserToken from "../utils/generateUtils";
+import { generateUserToken, generateUserOtp } from "../utils/generateUtils";
 import User from "../models/User";
 
 
 class AuthService {
+
+
+    registerUser = async (userData) => {
+
+        const { otp, otpExpired } = generateUserOtp();
+
+        const foundUser = await User.findOne({ email: userData.email.toLowerCase() });
+        if (foundUser) {
+            const error = new Error('User with this email already exists');
+            error.statusCode = 400;
+            throw error;
+        }
+        const user = User.create({ ...userData, otp, otpExpired });
+        if (!user) {
+            const error = new Error('User creation failed');
+            error.statusCode = 500;
+            throw error;
+        }
+    }
 
     loginUser = async (loginDetails) => {
 
@@ -30,8 +49,16 @@ class AuthService {
         return token;
     }
 
-    resetPassword = async (email,) => {
-        const user = await User.findOne({ email: email.toLowerCase() });
+    logoutUser = () => {
+        return {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        }
+    };
+
+    resetPassword = async ({ email }) => {
+        const user = await User.findOne({ email });
 
         if (!user) {
             const error = new Error("User not found");
@@ -47,9 +74,7 @@ class AuthService {
         return token;
     }
 
-    resetPasswordRequest = async () => {
-        const { token, newPassword } = resetDetails;
-
+    resetPasswordRequest = async (newPassword, token) => {
         const user = await User.findOne({
             passwordResetToken: token,
             passwordResetExpires: { $gt: Date.now() }

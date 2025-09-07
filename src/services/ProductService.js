@@ -2,7 +2,7 @@ import { Product } from '../models/productModel.js';
 
 class ProductService {
 
-    createProduct = async (productData) => {
+    registerProduct = async (productData) => {
         const foundProduct = await Product.findOne({ name: productData.name });
         if (foundProduct) {
             const error = new Error('Product with this name already exists');
@@ -15,6 +15,16 @@ class ProductService {
             error.statusCode = 500;
             throw error;
         }
+    }
+
+    getProductsByCategory = async (category) => {
+        const products = await Product.find({ category });
+        if (products.length === 0) {
+            const error = new Error('No products found in this category');
+            error.statusCode = 404;
+            throw error;
+        }
+        return products;
     }
 
     getProducts = async () => {
@@ -30,7 +40,7 @@ class ProductService {
     getProductByParam = async (query) => {
         const product = await Product.find(query);
         if (product.length === 0) {
-            const error = new Error('No published blogs found');
+            const error = new Error('No products found');
             error.statusCode = 404;
             throw error;
         }
@@ -69,6 +79,8 @@ class ProductService {
             error.statusCode = 500;
             throw error;
         }
+
+        return updatedProduct;
     }
 
     deleteProduct = async (filter) => {

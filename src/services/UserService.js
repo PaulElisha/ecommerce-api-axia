@@ -3,32 +3,6 @@ import { generateUserOtp } from "../utils/generateUtils.js";
 
 class UserService {
 
-    signupUser = async (userData) => {
-
-        const { otp } = generateUserOtp();
-
-        const foundUser = await User.findOne({ email: userData.email.toLowerCase() });
-        if (foundUser) {
-            const error = new Error('User with this email already exists');
-            error.statusCode = 400;
-            throw error;
-        }
-        const user = User.create({ ...userData, otp });
-        if (!user) {
-            const error = new Error('User creation failed');
-            error.statusCode = 500;
-            throw error;
-        }
-    }
-
-    logoutUser = () => {
-        return {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict'
-        }
-    };
-
     getUsers = async () => {
         const users = await User.find({}).select('-password');
         if (users.length === 0) {
@@ -56,6 +30,7 @@ class UserService {
             error.statusCode = 404;
             throw error;
         }
+        return user;
     }
 
     updateUserProfile = async (id, data) => {
@@ -72,6 +47,8 @@ class UserService {
             error.statusCode = 404;
             throw error;
         }
+
+        return user;
     }
 
     deleteUser = async (id) => {

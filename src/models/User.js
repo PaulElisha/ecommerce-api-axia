@@ -21,16 +21,11 @@ const userSchema = new Schema({
         type: Boolean,
         default: false
     },
-    AltimatAdmin: {
-        type: Boolean,
-        default: false
-    },
     otp: {
         type: String
     },
     otpExpired: {
-        type: Date,
-        default: Date.now() + 5 * 60 * 1000, // 5 minutes
+        type: Date
     },
     lastOtpRequest: {
         type: Date,

@@ -22,9 +22,17 @@ class OtpController {
 
     resendUserOTP = async (req, res) => {
         try {
-            const mailText = await this.otpService.resendUserOTP(req.body);
+            const user = await this.otpService.resendUserOTP(req.body);
+            if (!user) {
+                return res.status(400).json({ message: "Could not resend OTP", status: "error" });
+            }
 
-            const forwarder = new MailForwarder(mailText);
+            const text = {
+                subject: "<h1>Resend OTP</h1>",
+                message: `<p>Your new OTP ${user.otp} has been resent successfully. Kindly, proceed to verify as otp expires in ${user.otpExpired} minutes</p>`
+            }
+
+            const forwarder = new MailForwarder(text);
             forwarder.sendMail(req, res);
 
             res.status(200).json({ message: "OTP resent successfully", status: "ok" });

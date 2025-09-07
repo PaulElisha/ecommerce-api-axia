@@ -32,11 +32,12 @@ class OtpService {
 
         user.isVerified = true;
         user.otp = null;
+        user.otpExpired = null;
 
         await user.save();
     }
 
-    resendUserOTP = async (gmail) => {
+    resendUserOTP = async ({ gmail }) => {
         const user = await User.findOne({ gmail });
         if (!user) {
             const error = new Error("User not found");
@@ -59,17 +60,14 @@ class OtpService {
             throw error;
         }
 
-        const { otp } = generateUserOtp();
+        const { otp, otpExpired } = generateUserOtp();
 
         user.otp = otp;
+        user.otpExpired = otpExpired;
         user.lastOtpRequest = currentTime;
 
         await user.save();
-
-        return {
-            subject: "<h1>Resend OTP</h1>",
-            message: `<p>Your new OTP ${otp} has been resent successfully. Proceed to verify</p>`
-        }
+        return user;
     }
 }
 

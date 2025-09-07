@@ -9,6 +9,7 @@ export const generateUserToken = (user) => {
 export const generateUserOtp = () => {
     return {
         otp: Math.floor(100000 + Math.random() * 900000).toString(),
+        otpExpired: Date.now() + 10 * 60 * 1000, // 10 minutes from now
         token: Crypto.randomBytes(32).toString('hex')
     }
 }
